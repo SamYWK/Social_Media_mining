@@ -34,8 +34,7 @@ def main():
     tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
     X_train_tf = tf_transformer.transform(X_train_counts)
     print(type(X_train_counts))
-    
-
+    df = pd.DataFrame(X_train_tf.toarray())
     df.to_csv('./for_lstm', sep=',')
 
 if __name__ == '__main__':
