@@ -31,7 +31,7 @@ for s in sentences:
     a = a + 1
     T.append(train)
     
-model = gensim.models.Doc2Vec(T[1:],dm=1,alpha=0.1,window=5, min_alpha=0.025, min_count=1,size=100)
+model = gensim.models.Doc2Vec(T[1:],dm=1,alpha=0.1,window=5, min_alpha=0.025, min_count=1,size=784)
 X = model[0].reshape(1, -1)
 
 for m in range(1, (n-1)):
@@ -41,7 +41,7 @@ for m in range(1, (n-1)):
 df = pd.DataFrame(X)
 df2 = pd.DataFrame(np.array(y[1:]).reshape(-1, 1))
 df3 = pd.concat([df2, df], axis = 1)
-df3.to_csv('./final_data.csv', index = False, header = False)
+df3.to_csv('./final_data_cnn.csv', index = False, header = False)
 #n = 100000
 #batch_size = 200
 #learning_rate = 0.0001

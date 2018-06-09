@@ -19,11 +19,11 @@ def load_data(file_name):
     return train_test_split(X, y, test_size = 0.2, random_state = 1)
 
 def main():
-    X_train, X_test, y_train, y_test = load_data('final_data.csv')
+    X_train, X_test, y_train, y_test = load_data('final_data_cnn.csv')
     
     n = X_train.shape[0]
     batch_size = 200
-    learning_rate = 0.0001
+    learning_rate = 0.00001
     epochs = 200
     g_1 = tf.Graph()
         
@@ -92,7 +92,7 @@ def main():
                     if batch % 500 == 0:
                         print('Epoch', epoch,
                         'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys, keep_prob: 1}),
-                        'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}, keep_prob: 1))
+                        'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test, keep_prob: 1}))
                     
 if __name__ == '__main__':
     main()
