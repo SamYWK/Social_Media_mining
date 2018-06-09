@@ -24,7 +24,7 @@ for text in texts:
     for word in words:
         sentence.append(word)
     sentences.append(sentence)
-
+n = len(sentences)
 a = 1
 for s in sentences:
     train = TaggedDocument(s,[str(a)])
@@ -32,15 +32,16 @@ for s in sentences:
     T.append(train)
     
 model = gensim.models.Doc2Vec(T[1:],dm=1,alpha=0.1,window=5, min_alpha=0.025, min_count=1,size=100)
-X = np.array([])
-i = 0 
+X = model[0].reshape(1, -1)
 
-for m in model:
-    print(i)
-    X = np.append(X, m, axis = 0)
-    i+=1
+for m in range(1, (n-1)):
+    print(m)
+    X = np.concatenate((X, model[m].reshape(1, -1)), axis = 0)
+    
 df = pd.DataFrame(X)
-df.to_csv('./final_data.csv', index = False, columns = False)
+df2 = pd.DataFrame(np.array(y[1:]).reshape(-1, 1))
+df3 = pd.concat([df2, df], axis = 1)
+df3.to_csv('./final_data.csv', index = False, header = False)
 #n = 100000
 #batch_size = 200
 #learning_rate = 0.0001
