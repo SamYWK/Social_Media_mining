@@ -33,6 +33,8 @@ def main():
                 X_placeholder = tf.placeholder(tf.float32, [None, 784], name = 'x_inputs')
             with tf.name_scope('y_placeholder'):
                 y_placeholder = tf.placeholder(tf.float32, [None, 2], name = 'y_inputs')
+                
+            keep_prob = tf.placeholder(tf.float32)
             
             #forward
             X_resahpe = tf.reshape(X_placeholder, [-1, 28, 28, 1])
@@ -55,6 +57,7 @@ def main():
             pool2 = tf.layers.max_pooling2d(inputs = x2, pool_size=[2, 2], strides=2)
             pool2_flat = tf.reshape(pool2, [-1, 7*7*64])
             dense_1 = tf.layers.dense(pool2_flat, 1024, activation = tf.nn.relu)
+            dense_1_drop = tf.nn.dropout(dense_1, keep_prob)
             dense_2 = tf.layers.dense(dense_1, 2, activation = None)
             
             with tf.name_scope('loss_1'):
@@ -77,19 +80,19 @@ def main():
         with tf.Session(config = config) as sess:
             sess.run(init)
             #saver.restore(sess, "./saver/model.ckpt")
-            print(sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}))
+            print(sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test, keep_prob: 1}))
             #writer
             #writer = tf.summary.FileWriter('logs/', sess.graph)
             for epoch in range(epochs):
                 for batch in range(int (n / batch_size)):
                     batch_xs = X_train[(batch*batch_size) : (batch+1)*batch_size]
                     batch_ys = y_train[(batch*batch_size) : (batch+1)*batch_size]
-                    sess.run(train_step_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys})
+                    sess.run(train_step_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys, keep_prob: 0.5})
                     
                     if batch % 500 == 0:
                         print('Epoch', epoch,
-                        'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys}),
-                        'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}))
+                        'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys, keep_prob: 1}),
+                        'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}, keep_prob: 1))
                     
 if __name__ == '__main__':
     main()
