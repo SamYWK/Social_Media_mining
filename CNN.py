@@ -58,7 +58,7 @@ def main():
             pool2_flat = tf.reshape(pool2, [-1, 7*7*64])
             dense_1 = tf.layers.dense(pool2_flat, 1024, activation = tf.nn.relu)
             dense_1_drop = tf.nn.dropout(dense_1, keep_prob)
-            dense_2 = tf.layers.dense(dense_1, 2, activation = None)
+            dense_2 = tf.layers.dense(dense_1_drop, 2, activation = None)
             
             with tf.name_scope('loss_1'):
                 loss_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = dense_2, labels = y_placeholder))
