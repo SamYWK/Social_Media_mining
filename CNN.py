@@ -23,7 +23,7 @@ def main():
     
     n = X_train.shape[0]
     batch_size = 200
-    learning_rate = 0.00001
+    learning_rate = 0.0001
     epochs = 200
     g_1 = tf.Graph()
         
