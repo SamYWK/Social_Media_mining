@@ -23,8 +23,8 @@ def main():
     
     n = X_train.shape[0]
     batch_size = 200
-    learning_rate = 0.001
-    epochs = 500
+    learning_rate = 0.0001
+    epochs = 200
     g_1 = tf.Graph()
         
     with g_1.as_default():
@@ -35,8 +35,8 @@ def main():
                 y_placeholder = tf.placeholder(tf.float32, [None, 2], name = 'y_inputs')
             
             #forward
-            x1 = tf.layers.dense(X_placeholder, 100, activation = tf.nn.sigmoid, name = 'xlayer_1')
-            x2 = tf.layers.dense(x1, 100, activation = tf.nn.sigmoid, name = 'xlayer_2')
+            x1 = tf.layers.dense(X_placeholder, 100, activation = tf.nn.relu, name = 'xlayer_1')
+            x2 = tf.layers.dense(x1, 100, activation = tf.nn.relu, name = 'xlayer_2')
             x3 = tf.layers.dense(x2, 2, activation = None, name = 'xlayer_3')
             
             with tf.name_scope('loss_1'):
@@ -69,7 +69,8 @@ def main():
                     sess.run(train_step_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys})
                     
                     if batch % 500 == 0:
-                        print('Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys}),
+                        print('Epoch', epoch,
+                        'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys}),
                         'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}))
                     
 if __name__ == '__main__':
