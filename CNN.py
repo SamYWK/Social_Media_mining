@@ -24,7 +24,7 @@ def main():
     n = X_train.shape[0]
     batch_size = 200
     learning_rate = 0.0001
-    epochs = 200
+    epochs = 25
     g_1 = tf.Graph()
         
     with g_1.as_default():
@@ -77,12 +77,14 @@ def main():
         
         #saver
         saver = tf.train.Saver()
+        output_accuracy = np.array([])
         with tf.Session(config = config) as sess:
             sess.run(init)
             #saver.restore(sess, "./saver/model.ckpt")
             print(sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test, keep_prob: 1}))
             #writer
             #writer = tf.summary.FileWriter('logs/', sess.graph)
+            
             for epoch in range(epochs):
                 for batch in range(int (n / batch_size)):
                     batch_xs = X_train[(batch*batch_size) : (batch+1)*batch_size]
@@ -90,9 +92,11 @@ def main():
                     sess.run(train_step_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys, keep_prob: 0.5})
                     
                     if batch % 500 == 0:
+                        output_accuracy = np.append(output_accuracy, sess.run(accuracy, feed_dict={X_placeholder: X_test, y_placeholder: y_test, keep_prob: 1}))
                         print('Epoch', epoch,
                         'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys, keep_prob: 1}),
                         'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test, keep_prob: 1}))
+        np.savetxt('CNN_Accuracy.csv', output_accuracy, delimiter=',')
                     
 if __name__ == '__main__':
     main()

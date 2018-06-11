@@ -16,7 +16,7 @@ def load_data(file_name):
     y = df.iloc[:, 0].values.reshape(-1, 1)
     enc = OneHotEncoder()
     y = enc.fit_transform(y).toarray()
-    return train_test_split(X, y, test_size = 0.2, random_state = 1)
+    return train_test_split(X, y, test_size = 0.02, random_state = 1)
 
 def main():
     X_train, X_test, y_train, y_test = load_data('final_data.csv')
@@ -24,7 +24,7 @@ def main():
     n = X_train.shape[0]
     batch_size = 200
     learning_rate = 0.0001
-    epochs = 200
+    epochs = 100
     g_1 = tf.Graph()
         
     with g_1.as_default():
@@ -56,6 +56,7 @@ def main():
         
         #saver
         saver = tf.train.Saver()
+        output_accuracy = np.array([])
         with tf.Session(config = config) as sess:
             sess.run(init)
             #saver.restore(sess, "./saver/model.ckpt")
@@ -69,9 +70,11 @@ def main():
                     sess.run(train_step_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys})
                     
                     if batch % 500 == 0:
+                        output_accuracy = np.append(output_accuracy, sess.run(accuracy, feed_dict={X_placeholder: X_test, y_placeholder: y_test}))
                         print('Epoch', epoch,
                         'Loss :', sess.run(loss_1, feed_dict = {X_placeholder : batch_xs, y_placeholder : batch_ys}),
                         'Accuracy :', sess.run(accuracy, feed_dict = {X_placeholder : X_test, y_placeholder : y_test}))
+        np.savetxt('CNN_Accuracy.csv', output_accuracy, delimiter=',')
                     
 if __name__ == '__main__':
     main()
